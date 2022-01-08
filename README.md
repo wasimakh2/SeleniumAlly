@@ -6,5 +6,4 @@
 
 [![GitHub Actions Build History](https://buildstats.info/github/chart/wasimakh2/SeleniumAlly?branch=main&includeBuildsFromPullRequest=false)](https://github.com/wasimakh2/SeleniumAlly/actions)
 
-
-SeleniumAlly
+SeleniumAlly a Selenium WebDriver automation framework for .NET.
