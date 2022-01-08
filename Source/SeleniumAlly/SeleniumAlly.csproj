@@ -8,6 +8,10 @@
     <Product>SeleniumAlly</Product>
     <Description>SeleniumAlly</Description>
     <PackageTags>Tag1;Tag2;Tag3</PackageTags>
+    <Authors>Wasim Akhtar</Authors>
+    <Company>NCSTC</Company>
+    <Copyright>Copyright © Wasim Akhtar. All rights Reserved</Copyright>
+    <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.11.39" />
