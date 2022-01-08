@@ -38,7 +38,18 @@ public class WebDriverAutomation
         this.options.AddArgument("--disable-blink-features=AutomationControlled");
     }
 
-    private void StartChromeDriver()
+    /// <Summary>
+    /// Constructor that can accept the options
+    /// </Summary>
+    public WebDriverAutomation(ChromeOptions options)
+    {
+        this.options = options;
+    }    
+
+    /// <Summary>
+    /// StartChromeDriver start chrome driver
+    /// </Summary>
+    public void StartChromeDriver()
     {
         new DriverManager().SetUpDriver(new ChromeConfig());
         this.WebDriver = new ChromeDriver(this.options);
