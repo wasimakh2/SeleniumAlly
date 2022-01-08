@@ -13,47 +13,61 @@ public class WebDriverAutomation
     /// <Summary>
     /// A Selenium WebDriver
     /// </Summary>
-    public IWebDriver WebDriver { get; set; }
+    public IWebDriver? WebDriver = null;
+
+    private ChromeOptions options = new();
+
     /// <Summary>
     /// WebDriverAutomation Default Constructor
     /// </Summary>
     public WebDriverAutomation()
     {
-        ChromeOptions options = new();
 
-        options.AddArgument("--disable-notifications");
-        options.AddArgument("--start-maximized");
-        options.AddArgument("--disable-popups");
-        options.AddArgument("--disable-gpu");
-        options.AddArgument("--ignore-certificate-errors");
-        options.AddArgument("--disable-extensions");
-        options.AddArgument("--disable-dev-shm-usage");
+
+        this.options.AddArgument("--disable-notifications");
+        this.options.AddArgument("--start-maximized");
+        this.options.AddArgument("--disable-popups");
+        this.options.AddArgument("--disable-gpu");
+        this.options.AddArgument("--ignore-certificate-errors");
+        this.options.AddArgument("--disable-extensions");
+        this.options.AddArgument("--disable-dev-shm-usage");
         //options.AddArgument("--window-position=-32000,-32000");
         //options.AddArgument("headless");
         //Disable webdriver flags or you will be easily detectable
-        options.AddArgument("--disable-blink-features");
-        options.AddArgument("--disable-blink-features=AutomationControlled");
+        this.options.AddArgument("--disable-blink-features");
+        this.options.AddArgument("--disable-blink-features=AutomationControlled");
+    }
 
+    private void StartChromeDriver()
+    {
         new DriverManager().SetUpDriver(new ChromeConfig());
-        this.WebDriver = new ChromeDriver(options);
-
-        this.SetImplicitWait(10);
+        this.WebDriver = new ChromeDriver(this.options);
+        
     }
 
     private void SetImplicitWait(int time)
     {
-        WebDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(time);
+        if(this.WebDriver != null)
+        {
+            this.WebDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(time);
+        }
+        
     }
     ///<Summary>
     /// Get Selenium Browser PageSource
     ///</Summary>
-    public string GetPageSource(string uRL)
+    public string? GetPageSource(string uRL)
     {
-        this.WebDriver.Navigate()
+        if(this.WebDriver != null)
+        {
+            this.WebDriver.Navigate()
                  .GoToUrl(uRL);
-        var pagesource = this.WebDriver.PageSource;
+            var pagesource = this.WebDriver.PageSource;
+            return pagesource;
+        }
+        return null;
 
-        return pagesource;
+        
     }
     ///<Summary>
     /// Close the browser
@@ -62,8 +76,11 @@ public class WebDriverAutomation
     {
         try
         {
-            this.WebDriver.Close();
-            Console.WriteLine("Driver Closed Successfully");
+            if (this.WebDriver != null)
+            {
+                this.WebDriver.Close();
+                Console.WriteLine("Driver Closed Successfully");
+            }
         }
         catch (Exception ex)
         {
@@ -72,9 +89,12 @@ public class WebDriverAutomation
 
         try
         {
-            this.WebDriver.Quit();
+            if (this.WebDriver != null)
+            {
+                this.WebDriver.Quit();
 
-            Console.WriteLine("Driver Quit Successfully");
+                Console.WriteLine("Driver Quit Successfully");
+            }
         }
         catch (Exception ex)
         {
@@ -105,7 +125,10 @@ public class WebDriverAutomation
 
         if (this.IsElementPresent(_by))
         {
-            return this.WebDriver.FindElement(_by);
+            if (this.WebDriver != null)
+            {
+                return this.WebDriver.FindElement(_by);
+            }
         }
 
         return null;
@@ -114,7 +137,10 @@ public class WebDriverAutomation
     {
         try
         {
-            this.WebDriver.FindElement(by);
+            if (this.WebDriver != null)
+            {
+                this.WebDriver.FindElement(by);
+            }
             return true;
         }
         catch (NoSuchElementException)
