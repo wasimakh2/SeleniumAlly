@@ -8,22 +8,20 @@ using WebDriverManager.DriverConfigs.Impl;
 /// <summary>
 /// WebDriverAutomation.
 /// </summary>
-public class WebDriverAutomation
+public class WebDriverAutomation : IDisposable
 {
     /// <Summary>
-    /// A Selenium WebDriver
+    /// A Selenium WebDriver.
     /// </Summary>
-    public IWebDriver? WebDriver = null;
+    private IWebDriver? webDriver;
 
-    private ChromeOptions options = new();
+    private readonly ChromeOptions options = new();
 
     /// <Summary>
-    /// WebDriverAutomation Default Constructor
+    /// WebDriverAutomation Default Constructor.
     /// </Summary>
     public WebDriverAutomation()
     {
-
-
         this.options.AddArgument("--disable-notifications");
         this.options.AddArgument("--start-maximized");
         this.options.AddArgument("--disable-popups");
@@ -39,57 +37,63 @@ public class WebDriverAutomation
     }
 
     /// <Summary>
-    /// Constructor that can accept the options
+    /// Constructor that can accept the options.
     /// </Summary>
-    public WebDriverAutomation(ChromeOptions options)
-    {
-        this.options = options;
-    }    
+    /// <param name="options"></param>
+    public WebDriverAutomation(ChromeOptions options) => this.options = options;
 
     /// <Summary>
-    /// StartChromeDriver start chrome driver
+    /// StartChromeDriver start chrome driver.
     /// </Summary>
     public void StartChromeDriver()
     {
-        new DriverManager().SetUpDriver(new ChromeConfig());
-        this.WebDriver = new ChromeDriver(this.options);
-        
+        _ = new DriverManager().SetUpDriver(new ChromeConfig());
+        this.webDriver = new ChromeDriver(this.options);
     }
 
-    private void SetImplicitWait(int time)
+    /// <Summary>
+    /// SetImplicitWait.
+    /// </Summary>
+    public void SetImplicitWait(int time)
     {
-        if(this.WebDriver != null)
+        if (this.webDriver != null)
         {
-            this.WebDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(time);
+            this.webDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(time);
         }
-        
     }
-    ///<Summary>
-    /// Get Selenium Browser PageSource
-    ///</Summary>
+
+    /// <Summary>
+    /// Get Selenium Browser PageSource.
+    /// </Summary>
+    /// <returns>string or null</returns>
     public string? GetPageSource(string uRL)
     {
-        if(this.WebDriver != null)
+        if (string.IsNullOrWhiteSpace(uRL))
         {
-            this.WebDriver.Navigate()
+            throw new ArgumentException($"'{nameof(uRL)}' cannot be null or whitespace.", nameof(uRL));
+        }
+
+        if (this.webDriver != null)
+        {
+            this.webDriver.Navigate()
                  .GoToUrl(uRL);
-            var pagesource = this.WebDriver.PageSource;
+            var pagesource = this.webDriver.PageSource;
             return pagesource;
         }
-        return null;
 
-        
+        return null;
     }
-    ///<Summary>
-    /// Close the browser
-    ///</Summary>
+
+    /// <Summary>
+    /// Close the browser.
+    /// </Summary>
     public void TearDown()
     {
         try
         {
-            if (this.WebDriver != null)
+            if (this.webDriver != null)
             {
-                this.WebDriver.Close();
+                this.webDriver.Close();
                 Console.WriteLine("Driver Closed Successfully");
             }
         }
@@ -100,9 +104,9 @@ public class WebDriverAutomation
 
         try
         {
-            if (this.WebDriver != null)
+            if (this.webDriver != null)
             {
-                this.WebDriver.Quit();
+                this.webDriver.Quit();
 
                 Console.WriteLine("Driver Quit Successfully");
             }
@@ -127,31 +131,35 @@ public class WebDriverAutomation
 
         return map[locatorType];
     }
+
     /// <Summary>
     /// Get Element by ElementTag and Locator
     /// </Summary>
-    public IWebElement? GetElement(string elementTag, string locator)
+    /// <returns>IWebElement.</returns>
+    public IWebElement? GetElement(
+        string elementTag,
+                                   string locator)
     {
-        var _by = GetObj(locator, elementTag);
+        var by = GetObj(locator, elementTag);
 
-        if (this.IsElementPresent(_by))
+        if (this.IsElementPresent(by) && this.webDriver != null)
         {
-            if (this.WebDriver != null)
-            {
-                return this.WebDriver.FindElement(_by);
-            }
+            return this.webDriver.FindElement(by);
         }
 
         return null;
     }
-    private bool IsElementPresent(By by)
+
+    /// <summary>
+    /// Check if IsElementPresent.
+    /// </summary>
+    /// <param name="by"></param>
+    /// <returns>boolean.</returns>
+    public bool IsElementPresent(By by)
     {
         try
         {
-            if (this.WebDriver != null)
-            {
-                this.WebDriver.FindElement(by);
-            }
+            _ = this.webDriver?.FindElement(by);
             return true;
         }
         catch (NoSuchElementException)
@@ -159,4 +167,9 @@ public class WebDriverAutomation
             return false;
         }
     }
+
+    /// <summary>
+    /// Check if IsElementPresent.
+    /// </summary>
+    public void Dispose() => this.TearDown();
 }
