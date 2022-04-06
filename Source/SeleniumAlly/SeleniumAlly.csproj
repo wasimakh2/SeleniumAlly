@@ -18,6 +18,6 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />    
     <PackageReference Include="Selenium.WebDriver" Version="4.1.0" />    
     <PackageReference Include="StrongNamer" Version="0.2.5" />
-    <PackageReference Include="WebDriverManager" Version="2.12.3" />
+    <PackageReference Include="WebDriverManager" Version="2.12.4" />
   </ItemGroup>
 </Project>
