@@ -21,6 +21,6 @@
     <PackageReference Include="WebDriverManager" Version="2.14.1" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="17.2.32" />
+    <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="17.11.20" />
   </ItemGroup>
 </Project>
